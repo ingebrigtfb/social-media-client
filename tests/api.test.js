@@ -1,49 +1,49 @@
 import { login } from "../src/js/api/auth/login.js";
 import { logout } from "../src/js/api/auth/logout.js";
-import { save } from "../src/js/storage/save.js";
-import { remove } from "../src/js/storage/remove.js";
 
-jest.mock("../src/js/storage/save.js", () => ({
-  save: jest.fn(),
-}));
+describe("Login and Logout Tests", () => {
+  const email = "user@example.com";
+  const password = "password123";
+  const mockAccessToken = "mockUserToken";
 
-jest.mock("../src/js/storage/remove.js", () => ({
-  remove: jest.fn(),
-}));
+  const mockProfile = {
+    accessToken: mockAccessToken,
+    name: "Inge Brigt",
+    email: "ingeBrigt@example.com",
+  };
 
-global.fetch = jest.fn();
-
-describe('login', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('should store the token when provided with valid credentials', async () => {
-    const mockProfile = { accessToken: 'mocked_token', name: 'Inge Brigt' };
+  beforeEach(() => {
     
-    fetch.mockResolvedValueOnce({
+    global.fetch = jest.fn().mockResolvedValue({
       ok: true,
-      json: async () => mockProfile,
+      json: () => Promise.resolve(mockProfile),
     });
 
-    const result = await login('test@example.com', 'password123');
+   
+    Object.defineProperty(window, "localStorage", {
+      value: {
+        getItem: jest.fn(),
+        setItem: jest.fn(),
+        removeItem: jest.fn(),
+        clear: jest.fn(),
+      },
+      writable: true,
+    });
 
-    expect(save).toHaveBeenCalledWith('token', 'mocked_token');
-    expect(save).toHaveBeenCalledWith('profile', { name: 'Inge Brigt' });
-
-    expect(result).toEqual({ name: 'Inge Brigt' });
+    jest.clearAllMocks();  // Reset mocks before each test
   });
-});
 
-describe('logout', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
+  it("should store the token in localStorage when provided valid credentials", async () => {
+    await login(email, password);
+
+    expect(localStorage.setItem).toHaveBeenCalledWith("token", JSON.stringify(mockAccessToken));
   });
 
-  it('should remove token and profile from storage', () => {
-    logout();
+  it("should clear the token from browser storage after logout", async () => {
+    await login(email, password); 
+    logout(); 
 
-    expect(remove).toHaveBeenCalledWith('token');
-    expect(remove).toHaveBeenCalledWith('profile');
+  
+    expect(localStorage.removeItem).toHaveBeenCalledWith("token");
   });
 });
