@@ -10,11 +10,12 @@ export default [
       globals: {
         ...globals.browser,
         ...globals.node,
-}, },
+      },
+    },
   },
   pluginJs.configs.recommended,
   {
-    files: ["**/*.test.js"], 
+    files: ["**/*.test.js"],
     plugins: {
       jest: pluginJest,
     },
@@ -22,25 +23,28 @@ export default [
       globals: {
         ...globals.jest,
       },
-}, rules: {
+    },
+    rules: {
       ...pluginJest.configs.recommended.rules,
     },
-},
-{
-  files: ["cypress.config.js", "cypress/**/*.cy.js"],
-  plugins: {
-    cypress: pluginCypress,
   },
-  languageOptions: {
-    globals: {
-      ...globals.browser,
-      ...globals.node,
-      ...globals.cypress, 
-}, },
-  rules: {
-    ...pluginCypress.configs.recommended.rules,
-    "no-undef": "off", 
-    "no-unused-vars": "off", 
-    "cypress/no-unnecessary-waiting": "off",
-}, },
-]; 
+  {
+    files: ["cypress.config.js", "cypress/**/*.cy.js"],
+    plugins: {
+      cypress: pluginCypress,
+    },
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        ...globals.cypress,
+      },
+    },
+    rules: {
+      ...pluginCypress.configs.recommended.rules,
+      "no-undef": "off",
+      "no-unused-vars": "off",
+      "cypress/no-unnecessary-waiting": "off",
+    },
+  },
+];

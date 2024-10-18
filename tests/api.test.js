@@ -13,13 +13,11 @@ describe("Login and Logout Tests", () => {
   };
 
   beforeEach(() => {
-    
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
       json: () => Promise.resolve(mockProfile),
     });
 
-   
     Object.defineProperty(window, "localStorage", {
       value: {
         getItem: jest.fn(),
@@ -30,20 +28,22 @@ describe("Login and Logout Tests", () => {
       writable: true,
     });
 
-    jest.clearAllMocks();  // Reset mocks before each test
+    jest.clearAllMocks(); // Reset mocks before each test
   });
 
   it("should store the token in localStorage when provided valid credentials", async () => {
     await login(email, password);
 
-    expect(localStorage.setItem).toHaveBeenCalledWith("token", JSON.stringify(mockAccessToken));
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      "token",
+      JSON.stringify(mockAccessToken),
+    );
   });
 
   it("should clear the token from browser storage after logout", async () => {
-    await login(email, password); 
-    logout(); 
+    await login(email, password);
+    logout();
 
-  
     expect(localStorage.removeItem).toHaveBeenCalledWith("token");
   });
 });

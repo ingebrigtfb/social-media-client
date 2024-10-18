@@ -1,7 +1,7 @@
 export default {
-    testEnvironment: "jest-environment-jsdom",
-    transform: {
-      "^.+\\.js$": "babel-jest"
-    },
-    verbose: true
-  };
+  testEnvironment: "jest-environment-jsdom",
+  transform: {
+    "^.+\\.js$": "babel-jest",
+  },
+  verbose: true,
+};
